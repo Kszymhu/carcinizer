@@ -5,7 +5,7 @@ use clap::Parser;
 #[command(name = "Carcinizer")]
 #[command(about = "Uses an evolutionary algorithm to change given string into \"crab\".")]
 #[command(long_about = "Treats given text (which has to consist only of ASCII characters, at the moment) similar to a nucleotide sequence, and performs \
-mutations such as insertions, deletions and substitutions to bring the text closer to the word \"crab\".")]
+substitution mutations to bring the text closer to the word \"crab\".")]
 pub struct Args {
     #[arg(short = 'i')]
     #[arg(long = "input")]
