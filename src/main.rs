@@ -1,13 +1,15 @@
 mod cli;
+mod distance;
 
 use cli::Args;
 use clap::Parser;
 
+use distance::get_string_distance;
 fn main() {
     let args = Args::parse();
 
-    println!("input: {}", args.input);
-    println!("output file: {:?}", args.filename);
-    println!("thread count: {}", args.threads);
-    println!("generation size: {}", args.gen_size);
+    let target: &str = &args.input;
+    let pattern: &str = "crab";
+
+    println!("Distance: {}", get_string_distance(pattern, target));
 }
