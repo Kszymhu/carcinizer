@@ -2,6 +2,7 @@ use std::cmp::min;
 
 const ASCII_TABLE_LENGTH: i32 = 128;
 
+/// Calculates the difference between ASCII codes of [a] and [b], treating the ASCII table as a ring.
 fn get_char_distance(a: char, b: char) -> i32 {
     let a_ascii: i32 = a as i32; // char as i32 returns the ASCII code
     let b_ascii: i32 = b as i32;
@@ -12,17 +13,19 @@ fn get_char_distance(a: char, b: char) -> i32 {
     return min(regular, wraparound);
 }
 
-fn get_distance_to_spaces(text: &str) -> i32 {
+/// Calculates the sum of distances between each letter of [text] and [character].
+fn get_word_distance_to_char(text: &str, character: char) -> i32 {
     let mut distance: i32 = 0;
     let chars: Vec<char> = text.chars().collect();
 
     for char in chars {
-        distance += get_char_distance(char, ' ');
+        distance += get_char_distance(char, character);
     }
 
     return distance;
 }
 
+/// Calculates the sum of distances between corresponding chars of [a] and [b].
 fn get_word_distance(a: &str, b: &str) -> i32 {
 
     if a.len() != b.len() {
@@ -44,6 +47,11 @@ fn get_word_distance(a: &str, b: &str) -> i32 {
     return word_distance;
 }
 
+/// Looks for a substring of [text] which has the smallest distance from [pattern].
+/// 
+/// Returns a tuple of (best_distance, best_index), where
+/// - best_distance - distance from best match
+/// - best_index - index in [text] of the first letter of the match
 fn get_best_match(pattern: &str, text: &str) -> (i32, usize) {
     if pattern.len() > text.len() {
         panic!("Text cannot be shorter than the pattern!");
@@ -69,6 +77,12 @@ fn get_best_match(pattern: &str, text: &str) -> (i32, usize) {
     return (best_distance, best_index);
 }
 
+/// Finds the best match of [pattern] to [text], and then calculates corresponding distances of [text] to
+/// match padded with spaces to the length of [text].
+/// 
+/// Returns a tuple of (best_distance, best_index), where
+/// - best_distance - distance from best match
+/// - best_index - index in [text] of the first letter of the match
 pub fn get_string_distance(pattern: &str, text: &str) -> (i32, usize) {
     let best_match_result: (i32, usize) = get_best_match(pattern, text);
     let best_match_distance: i32 = best_match_result.0;
@@ -78,8 +92,8 @@ pub fn get_string_distance(pattern: &str, text: &str) -> (i32, usize) {
     let chars_before: &str = &text[0 .. best_match_start];
     let chars_after: &str = &text[best_match_end .. text.len()];
 
-    let chars_before_distance: i32 = get_distance_to_spaces(chars_before);
-    let chars_after_distance: i32 = get_distance_to_spaces(chars_after);
+    let chars_before_distance: i32 = get_word_distance_to_char(chars_before, ' ');
+    let chars_after_distance: i32 = get_word_distance_to_char(chars_after, ' ');
 
     let distance: i32 = chars_before_distance + best_match_distance + chars_after_distance;
 
